@@ -60,13 +60,15 @@ var PropTypes = React.PropTypes;
 // size of the navigator right now, so this is the next best thing.
 var SCREEN_WIDTH = Dimensions.get('window').width;
 var SCREEN_HEIGHT = Dimensions.get('window').height;
-var SCENE_DISABLED_NATIVE_PROPS = {
-  pointerEvents: 'none',
-  style: {
-    top: SCREEN_HEIGHT,
-    bottom: -SCREEN_HEIGHT,
-    opacity: 0,
-  },
+function sceneDisableNativeProps(screen_width, screen_height) {
+  return {
+    pointerEvents: 'none',
+    style: {
+      top: screen_height,
+      bottom: -screen_width,
+      opacity: 0,
+    },
+  }
 };
 
 var __uid = 0;
@@ -127,10 +129,10 @@ var styles = StyleSheet.create({
   },
   defaultSceneStyle: DEFAULT_SCENE_STYLE,
   baseScene: BASE_SCENE_STYLE,
-  disabledScene: {
-    top: SCREEN_HEIGHT,
-    bottom: -SCREEN_HEIGHT,
-  },
+  // disabledScene: {
+  //   top: SCREEN_HEIGHT,
+  //   bottom: -SCREEN_HEIGHT,
+  // },
   transitioner: {
     flex: 1,
     backgroundColor: 'transparent',
@@ -404,7 +406,7 @@ var Navigator = React.createClass({
 
   getDefaultProps: function() {
     return {
-      configureScene: () => NavigatorSceneConfigs.PushFromRight,
+      configureScene: () => NavigatorSceneConfigs.PushFromRight(),
       sceneStyle: DEFAULT_SCENE_STYLE,
     };
   },
@@ -439,6 +441,8 @@ var Navigator = React.createClass({
       activeGesture: null,
       pendingGestureProgress: null,
       transitionQueue: [],
+      screen_width: SCREEN_WIDTH,
+      screen_height: SCREEN_HEIGHT,
     };
   },
 
@@ -692,7 +696,7 @@ var Navigator = React.createClass({
    */
   _disableScene: function(sceneIndex) {
     this._sceneRefs[sceneIndex] &&
-      this._sceneRefs[sceneIndex].setNativeProps(SCENE_DISABLED_NATIVE_PROPS);
+      this._sceneRefs[sceneIndex].setNativeProps(sceneDisableNativeProps(this.state.screen_widht, this.state.screen_height));
   },
 
   /**
@@ -968,8 +972,8 @@ var Navigator = React.createClass({
         travelDist = -travelDist;
         oppositeAxisTravelDist = -oppositeAxisTravelDist;
         edgeHitWidth = isTravelVertical ?
-          -(SCREEN_HEIGHT - edgeHitWidth) :
-          -(SCREEN_WIDTH - edgeHitWidth);
+          -(this.state.screen_height - edgeHitWidth) :
+          -(this.state.screen_width - edgeHitWidth);
       }
       if (startedLoc === 0) {
         startedLoc = currentLoc;
@@ -1273,7 +1277,7 @@ var Navigator = React.createClass({
     var disabledSceneStyle = null;
     var disabledScenePointerEvents = 'auto';
     if (i !== this.state.presentedIndex) {
-      disabledSceneStyle = styles.disabledScene;
+      disabledSceneStyle = {top: this.state.screen_height, bottom: -this.state.screen_height};
       disabledScenePointerEvents = 'none';
     }
     return (
@@ -1334,6 +1338,14 @@ var Navigator = React.createClass({
     }
   },
 
+  onLayout: function(e) {
+    let { width, height} = e.nativeEvent.layout;
+    let screen_width = Dimensions.get('window').width;
+    let screen_height = Dimensions.get('window').height;
+    this.setState({screen_width, screen_height });
+    this.immediatelyResetRouteStack(this.state.routeStack)
+  },
+
   render: function() {
     var newRenderedSceneMap = new Map();
     var scenes = this.state.routeStack.map((route, index) => {
@@ -1349,7 +1361,7 @@ var Navigator = React.createClass({
     });
     this._renderedSceneMap = newRenderedSceneMap;
     return (
-      <View style={[styles.container, this.props.style]}>
+      <View style={[styles.container, this.props.style]} onLayout={this.onLayout}>
         <View
           style={styles.transitioner}
           {...this.panGesture.panHandlers}

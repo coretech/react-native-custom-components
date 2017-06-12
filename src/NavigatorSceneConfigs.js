@@ -39,453 +39,489 @@ var SCREEN_WIDTH = Dimensions.get('window').width;
 var SCREEN_HEIGHT = Dimensions.get('window').height;
 var PIXEL_RATIO = PixelRatio.get();
 
-var ToTheLeftIOS = {
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: -SCREEN_WIDTH * 0.3, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
+function ToTheLeftIOS(width, height) {
+  return {
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: -width * 0.3, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
+  }
 };
 
-var ToTheRightIOS = {
-  ...ToTheLeftIOS,
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: SCREEN_WIDTH * 0.3, y: 0, z: 0},
-  },
+function ToTheRightIOS(width, height) {
+  return {
+    ...ToTheLeftIOS(width, height),
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: width * 0.3, y: 0, z: 0},
+    },
+  }
 };
 
-var FadeToTheLeft = {
-  // Rotate *requires* you to break out each individual component of
-  // rotation (x, y, z, w)
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: -Math.round(SCREEN_WIDTH * 0.3), y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  // Uncomment to try rotation:
-  // Quick guide to reasoning about rotations:
-  // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#Quaternions
-  // transformRotateRadians: {
-  //   from: {x: 0, y: 0, z: 0, w: 1},
-  //   to: {x: 0, y: 0, z: -0.47, w: 0.87},
-  //   min: 0,
-  //   max: 1,
-  //   type: 'linear',
-  //   extrapolate: true
-  // },
-  transformScale: {
-    from: {x: 1, y: 1, z: 1},
-    to: {x: 0.95, y: 0.95, z: 1},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true
-  },
-  opacity: {
-    from: 1,
-    to: 0.3,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: false,
-    round: 100,
-  },
-  translateX: {
-    from: 0,
-    to: -Math.round(SCREEN_WIDTH * 0.3),
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  scaleX: {
-    from: 1,
-    to: 0.95,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true
-  },
-  scaleY: {
-    from: 1,
-    to: 0.95,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true
-  },
+function FadeToTheLeft(width, height) {
+  return {
+    // Rotate *requires* you to break out each individual component of
+    // rotation (x, y, z, w)
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: -Math.round(width * 0.3), y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    // Uncomment to try rotation:
+    // Quick guide to reasoning about rotations:
+    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/#Quaternions
+    // transformRotateRadians: {
+    //   from: {x: 0, y: 0, z: 0, w: 1},
+    //   to: {x: 0, y: 0, z: -0.47, w: 0.87},
+    //   min: 0,
+    //   max: 1,
+    //   type: 'linear',
+    //   extrapolate: true
+    // },
+    transformScale: {
+      from: {x: 1, y: 1, z: 1},
+      to: {x: 0.95, y: 0.95, z: 1},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true
+    },
+    opacity: {
+      from: 1,
+      to: 0.3,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: false,
+      round: 100,
+    },
+    translateX: {
+      from: 0,
+      to: -Math.round(width * 0.3),
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    scaleX: {
+      from: 1,
+      to: 0.95,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true
+    },
+    scaleY: {
+      from: 1,
+      to: 0.95,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true
+    },
+  }
 };
 
-var FadeToTheRight = {
-  ...FadeToTheLeft,
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: Math.round(SCREEN_WIDTH * 0.3), y: 0, z: 0},
-  },
-  translateX: {
-    from: 0,
-    to: Math.round(SCREEN_WIDTH * 0.3),
-  },
+function FadeToTheRight(width, height) {
+  return {
+    ...FadeToTheLeft(width, height),
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: Math.round(width * 0.3), y: 0, z: 0},
+    },
+    translateX: {
+      from: 0,
+      to: Math.round(width * 0.3),
+    },
+  }
 };
 
-var FadeIn = {
-  opacity: {
-    from: 0,
-    to: 1,
-    min: 0.5,
-    max: 1,
-    type: 'linear',
-    extrapolate: false,
-    round: 100,
-  },
+function FadeIn(width, height) {
+  return {
+    opacity: {
+      from: 0,
+      to: 1,
+      min: 0.5,
+      max: 1,
+      type: 'linear',
+      extrapolate: false,
+      round: 100,
+    },
+  }
 };
 
-var FadeOut = {
-  opacity: {
-    from: 1,
-    to: 0,
-    min: 0,
-    max: 0.5,
-    type: 'linear',
-    extrapolate: false,
-    round: 100,
-  },
+function FadeOut(width, height) {
+  return {
+    opacity: {
+      from: 1,
+      to: 0,
+      min: 0,
+      max: 0.5,
+      type: 'linear',
+      extrapolate: false,
+      round: 100,
+    },
+  }
 };
 
-var ToTheLeft = {
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: -SCREEN_WIDTH, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
+function ToTheLeft(width, height) {
+  return {
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: -width, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
 
-  translateX: {
-    from: 0,
-    to: -SCREEN_WIDTH,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+    translateX: {
+      from: 0,
+      to: -width,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var ToTheRight = {
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: SCREEN_WIDTH, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
+function ToTheRight(width, height) {
+  return {
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: width, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
 
-  translateX: {
-    from: 0,
-    to: SCREEN_WIDTH,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+    translateX: {
+      from: 0,
+      to: width,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var ToTheUp = {
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: 0, y: -SCREEN_HEIGHT, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
-  translateY: {
-    from: 0,
-    to: -SCREEN_HEIGHT,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+function ToTheUp(width, height) {
+  return {
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: 0, y: -height, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
+    translateY: {
+      from: 0,
+      to: -height,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var ToTheDown = {
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: 0, y: SCREEN_HEIGHT, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
-  translateY: {
-    from: 0,
-    to: SCREEN_HEIGHT,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+function ToTheDown(width, height) {
+  return {
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: 0, y: height, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
+    translateY: {
+      from: 0,
+      to: height,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var FromTheRight = {
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
+function FromTheRight(width, height) {
+  return {
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
 
-  transformTranslate: {
-    from: {x: SCREEN_WIDTH, y: 0, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+    transformTranslate: {
+      from: {x: width, y: 0, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
 
-  translateX: {
-    from: SCREEN_WIDTH,
-    to: 0,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+    translateX: {
+      from: width,
+      to: 0,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
 
-  scaleX: {
-    value: 1,
-    type: 'constant',
-  },
-  scaleY: {
-    value: 1,
-    type: 'constant',
-  },
+    scaleX: {
+      value: 1,
+      type: 'constant',
+    },
+    scaleY: {
+      value: 1,
+      type: 'constant',
+    },
+  }
 };
 
-var FromTheLeft = {
-  ...FromTheRight,
-  transformTranslate: {
-    from: {x: -SCREEN_WIDTH, y: 0, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  translateX: {
-    from: -SCREEN_WIDTH,
-    to: 0,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+function FromTheLeft(width, height) {
+  return {
+    ...FromTheRight(width, height),
+    transformTranslate: {
+      from: {x: -widht, y: 0, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    translateX: {
+      from: -width,
+      to: 0,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var FromTheDown = {
-  ...FromTheRight,
-  transformTranslate: {
-    from: {y: SCREEN_HEIGHT, x: 0, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  translateY: {
-    from: SCREEN_HEIGHT,
-    to: 0,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+function FromTheDown(width, height) {
+  return {
+    ...FromTheRight(width, height),
+    transformTranslate: {
+      from: {y: height, x: 0, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    translateY: {
+      from: height,
+      to: 0,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var FromTheTop = {
-  ...FromTheRight,
-  transformTranslate: {
-    from: {y: -SCREEN_HEIGHT, x: 0, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  translateY: {
-    from: -SCREEN_HEIGHT,
-    to: 0,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+function FromTheTop(width, height) {
+  return {
+    ...FromTheRight(width, height),
+    transformTranslate: {
+      from: {y: -height, x: 0, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    translateY: {
+      from: -height,
+      to: 0,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
-var ToTheBack = {
-  // Rotate *requires* you to break out each individual component of
-  // rotation (x, y, z, w)
-  transformTranslate: {
-    from: {x: 0, y: 0, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  transformScale: {
-    from: {x: 1, y: 1, z: 1},
-    to: {x: 0.95, y: 0.95, z: 1},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true
-  },
-  opacity: {
-    from: 1,
-    to: 0.3,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: false,
-    round: 100,
-  },
-  scaleX: {
-    from: 1,
-    to: 0.95,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true
-  },
-  scaleY: {
-    from: 1,
-    to: 0.95,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true
-  },
+function ToTheBack(width, height) {
+  return {
+    // Rotate *requires* you to break out each individual component of
+    // rotation (x, y, z, w)
+    transformTranslate: {
+      from: {x: 0, y: 0, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    transformScale: {
+      from: {x: 1, y: 1, z: 1},
+      to: {x: 0.95, y: 0.95, z: 1},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true
+    },
+    opacity: {
+      from: 1,
+      to: 0.3,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: false,
+      round: 100,
+    },
+    scaleX: {
+      from: 1,
+      to: 0.95,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true
+    },
+    scaleY: {
+      from: 1,
+      to: 0.95,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true
+    },
+  }
 };
 
-var FromTheFront = {
-  opacity: {
-    value: 1.0,
-    type: 'constant',
-  },
+function FromTheFront(width, height) {
+  return {
+    opacity: {
+      value: 1.0,
+      type: 'constant',
+    },
 
-  transformTranslate: {
-    from: {x: 0, y: SCREEN_HEIGHT, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  translateY: {
-    from: SCREEN_HEIGHT,
-    to: 0,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  scaleX: {
-    value: 1,
-    type: 'constant',
-  },
-  scaleY: {
-    value: 1,
-    type: 'constant',
-  },
+    transformTranslate: {
+      from: {x: 0, y: height, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    translateY: {
+      from: height,
+      to: 0,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    scaleX: {
+      value: 1,
+      type: 'constant',
+    },
+    scaleY: {
+      value: 1,
+      type: 'constant',
+    },
+  }
 };
 
-var ToTheBackAndroid = {
-  opacity: {
-    value: 1,
-    type: 'constant',
-  },
+function ToTheBackAndroid(width, height) {
+  return {
+    opacity: {
+      value: 1,
+      type: 'constant',
+    },
+  }
 };
 
-var FromTheFrontAndroid = {
-  opacity: {
-    from: 0,
-    to: 1,
-    min: 0.5,
-    max: 1,
-    type: 'linear',
-    extrapolate: false,
-    round: 100,
-  },
-  transformTranslate: {
-    from: {x: 0, y: 100, z: 0},
-    to: {x: 0, y: 0, z: 0},
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
-  translateY: {
-    from: 100,
-    to: 0,
-    min: 0,
-    max: 1,
-    type: 'linear',
-    extrapolate: true,
-    round: PIXEL_RATIO,
-  },
+function FromTheFrontAndroid(width, height) {
+  return {
+    opacity: {
+      from: 0,
+      to: 1,
+      min: 0.5,
+      max: 1,
+      type: 'linear',
+      extrapolate: false,
+      round: 100,
+    },
+    transformTranslate: {
+      from: {x: 0, y: 100, z: 0},
+      to: {x: 0, y: 0, z: 0},
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+    translateY: {
+      from: 100,
+      to: 0,
+      min: 0,
+      max: 1,
+      type: 'linear',
+      extrapolate: true,
+      round: PIXEL_RATIO,
+    },
+  }
 };
 
 var BaseOverswipeConfig = {
@@ -493,50 +529,57 @@ var BaseOverswipeConfig = {
   frictionByDistance: 1.5,
 };
 
-var BaseLeftToRightGesture = {
+function BaseLeftToRightGesture(width, height) {
+  return {
 
-  // If the gesture can end and restart during one continuous touch
-  isDetachable: false,
+    // If the gesture can end and restart during one continuous touch
+    isDetachable: false,
 
-  // How far the swipe must drag to start transitioning
-  gestureDetectMovement: 2,
+    // How far the swipe must drag to start transitioning
+    gestureDetectMovement: 2,
 
-  // Amplitude of release velocity that is considered still
-  notMoving: 0.3,
+    // Amplitude of release velocity that is considered still
+    notMoving: 0.3,
 
-  // Fraction of directional move required.
-  directionRatio: 0.66,
+    // Fraction of directional move required.
+    directionRatio: 0.66,
 
-  // Velocity to transition with when the gesture release was "not moving"
-  snapVelocity: 2,
+    // Velocity to transition with when the gesture release was "not moving"
+    snapVelocity: 2,
 
-  // Region that can trigger swipe. iOS default is 30px from the left edge
-  edgeHitWidth: 30,
+    // Region that can trigger swipe. iOS default is 30px from the left edge
+    edgeHitWidth: 30,
 
-  // Ratio of gesture completion when non-velocity release will cause action
-  stillCompletionRatio: 3 / 5,
+    // Ratio of gesture completion when non-velocity release will cause action
+    stillCompletionRatio: 3 / 5,
 
-  fullDistance: SCREEN_WIDTH,
+    fullDistance: width,
 
-  direction: 'left-to-right',
-
+    direction: 'left-to-right',
+  }
 };
 
-var BaseRightToLeftGesture = {
-  ...BaseLeftToRightGesture,
-  direction: 'right-to-left',
+function BaseRightToLeftGesture(width, height) {
+  return {
+    ...BaseLeftToRightGesture(width, height),
+    direction: 'right-to-left',
+  }
 };
 
-var BaseDownUpGesture = {
-  ...BaseLeftToRightGesture,
-  fullDistance: SCREEN_HEIGHT,
-  direction: 'bottom-to-top',
+function BaseDownUpGesture(width, height) {
+  return {
+    ...BaseLeftToRightGesture(width, height),
+    fullDistance: height,
+    direction: 'bottom-to-top',
+  }
 };
 
-var BaseUpDownGesture = {
-  ...BaseLeftToRightGesture,
-  fullDistance: SCREEN_HEIGHT,
-  direction: 'top-to-bottom',
+function BaseUpDownGesture(width, height) {
+  return {
+    ...BaseLeftToRightGesture(width, height),
+    fullDistance: height,
+    direction: 'top-to-bottom',
+  }
 };
 
 // For RTL experiment, we need to swap all the Left and Right gesture and animation.
@@ -569,215 +612,256 @@ if (IS_RTL) {
   };
 }
 
-var BaseConfig = {
-  // A list of all gestures that are enabled on this scene
-  gestures: {
-    pop: directionMapping.BaseStartToEndGesture,
-  },
+function BaseConfig(width, height) {
+  return {
+    // A list of all gestures that are enabled on this scene
+    gestures: {
+      pop: directionMapping.BaseStartToEndGesture(width, height),
+    },
 
-  // Rebound spring parameters when transitioning FROM this scene
-  springFriction: 26,
-  springTension: 200,
+    // Rebound spring parameters when transitioning FROM this scene
+    springFriction: 26,
+    springTension: 200,
 
-  // Velocity to start at when transitioning without gesture
-  defaultTransitionVelocity: 1.5,
+    // Velocity to start at when transitioning without gesture
+    defaultTransitionVelocity: 1.5,
 
-  // Animation interpolators for horizontal transitioning:
-  animationInterpolators: {
-    into: buildStyleInterpolator(directionMapping.FromTheEnd),
-    out: buildStyleInterpolator(directionMapping.FadeToTheStart),
-  },
+    // Animation interpolators for horizontal transitioning:
+    animationInterpolators: {
+      into: buildStyleInterpolator(directionMapping.FromTheEnd(width, height)),
+      out: buildStyleInterpolator(directionMapping.FadeToTheStart(width, height)),
+    },
+  }
 };
 
 var NavigatorSceneConfigs = {
-  PushFromRight: {
-    ...BaseConfig,
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheEnd),
-      out: buildStyleInterpolator(directionMapping.ToTheStartIOS),
-    },
+  PushFromRight: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheEnd(width, height)),
+        out: buildStyleInterpolator(directionMapping.ToTheStartIOS(width, height)),
+      },
+    }
   },
-  PushFromLeft: {
-    ...BaseConfig,
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheStart),
-      out: buildStyleInterpolator(directionMapping.ToTheEndIOS),
-    },
+  PushFromLeft: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheStart(width, height)),
+        out: buildStyleInterpolator(directionMapping.ToTheEndIOS(width, height)),
+      },
+    }
   },
-  FloatFromRight: {
-    ...BaseConfig,
-    // We will want to customize this soon
+  FloatFromRight: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      // We will want to customize this soon
+    }
   },
-  FloatFromLeft: {
-    ...BaseConfig,
-    gestures: {
-      pop: directionMapping.BaseEndToStartGesture,
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheStart),
-      out: buildStyleInterpolator(directionMapping.FadeToTheEnd),
-    },
-  },
-  FloatFromBottom: {
-    ...BaseConfig,
-    gestures: {
-      pop: {
-        ...directionMapping.BaseStartToEndGesture,
-        edgeHitWidth: 150,
-        direction: 'top-to-bottom',
-        fullDistance: SCREEN_HEIGHT,
+  FloatFromLeft: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        pop: directionMapping.BaseEndToStartGesture(width, height),
+      },
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheStart(width, height)),
+        out: buildStyleInterpolator(directionMapping.FadeToTheEnd(width, height)),
       }
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(FromTheFront),
-      out: buildStyleInterpolator(ToTheBack),
-    },
+    }
   },
-  FloatFromBottomAndroid: {
-    ...BaseConfig,
-    gestures: null,
-    defaultTransitionVelocity: 3,
-    springFriction: 20,
-    animationInterpolators: {
-      into: buildStyleInterpolator(FromTheFrontAndroid),
-      out: buildStyleInterpolator(ToTheBackAndroid),
-    },
+  FloatFromBottom: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        pop: {
+          ...directionMapping.BaseStartToEndGesture(width, height),
+          edgeHitWidth: 150,
+          direction: 'top-to-bottom',
+          fullDistance: height,
+        }
+      },
+      animationInterpolators: {
+        into: buildStyleInterpolator(FromTheFront(width, height)),
+        out: buildStyleInterpolator(ToTheBack(width, height)),
+      },
+    }
   },
-  FadeAndroid: {
-    ...BaseConfig,
-    gestures: null,
-    animationInterpolators: {
-      into: buildStyleInterpolator(FadeIn),
-      out: buildStyleInterpolator(FadeOut),
-    },
+  FloatFromBottomAndroid: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: null,
+      defaultTransitionVelocity: 3,
+      springFriction: 20,
+      animationInterpolators: {
+        into: buildStyleInterpolator(FromTheFrontAndroid(width, height)),
+        out: buildStyleInterpolator(ToTheBackAndroid(width, height)),
+      },
+    }
   },
-  SwipeFromLeft: {
-    ...BaseConfig,
-    gestures: {
-      jumpBack: {
-        ...directionMapping.BaseEndToStartGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+  FadeAndroid: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: null,
+      animationInterpolators: {
+        into: buildStyleInterpolator(FadeIn(width, height)),
+        out: buildStyleInterpolator(FadeOut(width, height)),
       },
-      jumpForward: {
-        ...directionMapping.BaseStartToEndGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
-      },
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheStart),
-      out: buildStyleInterpolator(directionMapping.ToTheEnd),
-    },
+    }
   },
-  HorizontalSwipeJump: {
-    ...BaseConfig,
-    gestures: {
-      jumpBack: {
-        ...directionMapping.BaseStartToEndGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+  SwipeFromLeft: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        jumpBack: {
+          ...directionMapping.BaseEndToStartGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        jumpForward: {
+          ...directionMapping.BaseStartToEndGesture(width, height),
+          overswipe: BaseOverswipeConfig(width, height),
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
       },
-      jumpForward: {
-        ...directionMapping.BaseEndToStartGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheStart(width, height)),
+        out: buildStyleInterpolator(directionMapping.ToTheEnd(width, height)),
       },
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheEnd),
-      out: buildStyleInterpolator(directionMapping.ToTheStart),
-    },
+    }
   },
-  HorizontalSwipeJumpFromRight: {
-    ...BaseConfig,
-    gestures: {
-      jumpBack: {
-        ...directionMapping.BaseEndToStartGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+  HorizontalSwipeJump: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        jumpBack: {
+          ...directionMapping.BaseStartToEndGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        jumpForward: {
+          ...directionMapping.BaseEndToStartGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
       },
-      jumpForward: {
-        ...directionMapping.BaseStartToEndGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheEnd(width, height)),
+        out: buildStyleInterpolator(directionMapping.ToTheStart(width, height)),
       },
-      pop: directionMapping.BaseEndToStartGesture,
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheStart),
-      out: buildStyleInterpolator(directionMapping.FadeToTheEnd),
-    },
+    }
   },
-  HorizontalSwipeJumpFromLeft: {
-    ...BaseConfig,
-    gestures: {
-      jumpBack: {
-        ...directionMapping.BaseEndToStartGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+  HorizontalSwipeJumpFromRight: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        jumpBack: {
+          ...directionMapping.BaseEndToStartGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        jumpForward: {
+          ...directionMapping.BaseStartToEndGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        pop: directionMapping.BaseEndToStartGesture(width, height),
       },
-      jumpForward: {
-        ...directionMapping.BaseStartToEndGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheStart(width, height)),
+        out: buildStyleInterpolator(directionMapping.FadeToTheEnd(width, height)),
       },
-      pop: directionMapping.BaseEndToStartGesture,
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(directionMapping.FromTheStart),
-      out: buildStyleInterpolator(directionMapping.ToTheEnd),
-    },
+    }
   },
-  VerticalUpSwipeJump: {
-    ...BaseConfig,
-    gestures: {
-      jumpBack: {
-        ...BaseUpDownGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+  HorizontalSwipeJumpFromLeft: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        jumpBack: {
+          ...directionMapping.BaseEndToStartGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        jumpForward: {
+          ...directionMapping.BaseStartToEndGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        pop: directionMapping.BaseEndToStartGesture(width, height),
       },
-      jumpForward: {
-        ...BaseDownUpGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+      animationInterpolators: {
+        into: buildStyleInterpolator(directionMapping.FromTheStart(width, height)),
+        out: buildStyleInterpolator(directionMapping.ToTheEnd(width, height)),
       },
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(FromTheDown),
-      out: buildStyleInterpolator(ToTheUp),
-    },
+    }
   },
-  VerticalDownSwipeJump: {
-    ...BaseConfig,
-    gestures: {
-      jumpBack: {
-        ...BaseDownUpGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+  VerticalUpSwipeJump: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        jumpBack: {
+          ...BaseUpDownGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        jumpForward: {
+          ...BaseDownUpGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
       },
-      jumpForward: {
-        ...BaseUpDownGesture,
-        overswipe: BaseOverswipeConfig,
-        edgeHitWidth: null,
-        isDetachable: true,
+      animationInterpolators: {
+        into: buildStyleInterpolator(FromTheDown(width, height)),
+        out: buildStyleInterpolator(ToTheUp(width, height)),
       },
-    },
-    animationInterpolators: {
-      into: buildStyleInterpolator(FromTheTop),
-      out: buildStyleInterpolator(ToTheDown),
-    },
+    }
+  },
+  VerticalDownSwipeJump: function() {
+    let {width, height} = Dimensions.get('window');
+    return {
+      ...BaseConfig(width, height),
+      gestures: {
+        jumpBack: {
+          ...BaseDownUpGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+        jumpForward: {
+          ...BaseUpDownGesture(width, height),
+          overswipe: BaseOverswipeConfig,
+          edgeHitWidth: null,
+          isDetachable: true,
+        },
+      },
+      animationInterpolators: {
+        into: buildStyleInterpolator(FromTheTop(width, height)),
+        out: buildStyleInterpolator(ToTheDown(width, height)),
+      },
+    }
   },
 };
 
