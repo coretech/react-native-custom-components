@@ -696,7 +696,7 @@ var Navigator = React.createClass({
    */
   _disableScene: function(sceneIndex) {
     this._sceneRefs[sceneIndex] &&
-      this._sceneRefs[sceneIndex].setNativeProps(sceneDisableNativeProps(this.state.screen_widht, this.state.screen_height));
+      this._sceneRefs[sceneIndex].setNativeProps(sceneDisableNativeProps(this.state.screen_width, this.state.screen_height));
   },
 
   /**
