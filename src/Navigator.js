@@ -65,7 +65,7 @@ function sceneDisableNativeProps(screen_width, screen_height) {
     pointerEvents: 'none',
     style: {
       top: screen_height,
-      bottom: -screen_width,
+      bottom: -screen_height,
       opacity: 0,
     },
   }
@@ -1342,8 +1342,13 @@ var Navigator = React.createClass({
     let { width, height} = e.nativeEvent.layout;
     let screen_width = Dimensions.get('window').width;
     let screen_height = Dimensions.get('window').height;
-    this.setState({screen_width, screen_height });
-    this.immediatelyResetRouteStack(this.state.routeStack)
+    if( screen_width != this.state.screen_width || screen_height != this.state.screen_height ) {
+      this.setState( {
+        screen_width,
+        screen_height,
+        sceneConfigStack: this.state.routeStack.map( route=> this.props.configureScene( route, this.state.routeStack ) )
+      } );
+    }
   },
 
   render: function() {
