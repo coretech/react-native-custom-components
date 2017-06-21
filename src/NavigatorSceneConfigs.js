@@ -330,7 +330,7 @@ function FromTheLeft(width, height) {
   return {
     ...FromTheRight(width, height),
     transformTranslate: {
-      from: {x: -widht, y: 0, z: 0},
+      from: {x: -width, y: 0, z: 0},
       to: {x: 0, y: 0, z: 0},
       min: 0,
       max: 1,
